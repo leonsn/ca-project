@@ -47,10 +47,7 @@ jobs:
       - run:
           name: Deploy over SSH
           command: |
-                  #ssh $SSH_USER@$SSH_HOST docker pull leonsn/circleci-project-app
-                  #ssh $SSH_USER@$SSH_HOST "if [ $(docker inspect -f '{{.State.Running}}' circleci-server) = 'true' ]; then docker container stop $(docker inspect -f '{{.Id}}' circleci-server); fi"
                   ssh $SSH_USER@$SSH_HOST docker stop circleci-server > /dev/null 2>&1
-                  #ssh $SSH_USER@$SSH_HOST docker stop circleci-server
                   ssh $SSH_USER@$SSH_HOST docker pull leonsn/circleci-project-app
                   ssh $SSH_USER@$SSH_HOST docker container run -d --rm -p 5000:5000 --name circleci-server leonsn/circleci-project-app run.py
   health_check:
@@ -71,20 +68,19 @@ workflows:
   version: 2
   test_and_package_flow:
     jobs:
-      - deploy
+      - test
+      - dockerize:
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
+      - deploy:
+          requires:
+            - dockerize
+          filters:
+            branches:
+              only: master
       - health_check:
           requires:
             - deploy
-      #- test
-      #- dockerize:
-      #    requires:
-      #      - test
-      #    filters:
-      #      branches:
-      #        only: master
-      #- deploy:
-      #    requires:
-      #      - dockerize
-      #    filters:
-      #      branches:
-      #        only: master
