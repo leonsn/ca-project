@@ -53,7 +53,7 @@ workflows:
   version: 2
   test_and_package_flow:
     jobs:
-      - test
+      - dockerize
       #- test
       #- dockerize:
       #    requires:
