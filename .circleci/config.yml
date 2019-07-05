@@ -48,7 +48,11 @@ jobs:
           name: Deploy over SSH
           command: |
                   #ssh $SSH_USER@$SSH_HOST docker pull leonsn/circleci-project-app
-                  ssh $SSH_USER@$SSH_HOST docker container run -d -p 5000:5000 leonsn/circleci-project-app run.py
+                  ssh $SSH_USER@$SSH_HOST if [ $(docker inspect -f '{{.State.Running}}' circleci-server) = "true" ]; then docker container stop $(docker inspect -f '{{.Id}}' circleci-server); fi
+                  ssh $SSH_USER@$SSH_HOST docker container run -d --rm -p 5000:5000 --name circleci-server leonsn/circleci-project-app run.py
+  deploytest:
+
+
 workflows:
   version: 2
   test_and_package_flow:
