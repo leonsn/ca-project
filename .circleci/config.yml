@@ -41,6 +41,15 @@ jobs:
       - run: docker build -t leonsn/circleci-project-app:$CIRCLE_SHA1 .
       # deploy the image
       - run: docker push leonsn/circleci-project-app:$CIRCLE_SHA1
+  deploy:
+    docker:
+      - image: ubuntu:18.04
+    steps:
+      - run:
+          name: Deploy over SSH
+          command: |
+                  #ssh $SSH_USER@$SSH_HOST docker pull leonsn/circleci-project-app
+                  ssh $SSH_USER@$SSH_HOST docker container run leonsn/circleci-project-app
 workflows:
   version: 2
   test_and_package_flow:
