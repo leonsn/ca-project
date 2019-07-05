@@ -72,7 +72,7 @@ workflows:
   test_and_package_flow:
     jobs:
       - deploy
-      - health-check:
+      - health_check:
           requires:
             - deploy
       #- test
