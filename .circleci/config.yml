@@ -9,8 +9,8 @@ jobs:
       - run: mkdir test-results
       - run:
           command: |
-            sudo pip install -r requirements.txt
-            sudo pip install unittest-xml-reporting
+            pip install -r requirements.txt
+            pip install unittest-xml-reporting
       - run:
           command: |
             python -m xmlrunner discover -s src/tests -t src/tests -o test-results
