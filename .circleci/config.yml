@@ -61,4 +61,9 @@ workflows:
           filters:
             branches:
               only: master
-
+      - deploy:
+          requires:
+            - dockerize
+          filters:
+            branches:
+              only: master
