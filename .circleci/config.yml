@@ -1,9 +1,9 @@
 version: 2.0
 jobs:
-  build:
+  test:
     working_directory: ~/app
     docker:
-            - image: python:2.7-slim
+      - image: python:2.7-slim
     steps:
       - checkout # check out source code to working directory
       - run: mkdir test-results
@@ -19,3 +19,37 @@ jobs:
       - store_artifacts: # Upload test summary for display in Artifacts
           path: test-results
           destination: tr1
+  run-local:
+    working_directory: ~/app
+    docker:
+      - image: python:2.7-slim
+    steps:
+      - checkout # check out source code to working directory
+      - run:
+          command: |
+            pip install -r requirements.txt
+      - run:
+          command: |
+            python run.py
+  dockerize:
+    machine: true
+    steps:
+      - checkout
+      # Login to docker
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      # build the application image
+      - run: docker build -t leonsn/circleci-project-app:$CIRCLE_SHA1 .
+      # deploy the image
+      - run: docker push leonsn/circleci-project-app:$CIRCLE_SHA1
+workflows:
+  version: 2
+  test_and_package_flow:
+    jobs:
+      - test
+      - dockerize:
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
+
