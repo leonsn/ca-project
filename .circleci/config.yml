@@ -49,7 +49,7 @@ jobs:
           command: |
                   #ssh $SSH_USER@$SSH_HOST docker pull leonsn/circleci-project-app
                   #ssh $SSH_USER@$SSH_HOST "if [ $(docker inspect -f '{{.State.Running}}' circleci-server) = 'true' ]; then docker container stop $(docker inspect -f '{{.Id}}' circleci-server); fi"
-                  ssh $SSH_USER@$SSH_HOST "if [ $(docker inspect -f '{{.State.Running}}' circleci-server) = \"true\" ]; then echo 'true1'; else echo 'wrong1'; fi"
+                  ssh $SSH_USER@$SSH_HOST if [ $(docker inspect -f '{{.State.Running}}' circleci-server) = "true" ]; then echo 'true1'; else echo 'wrong1'; fi
                   #ssh $SSH_USER@$SSH_HOST docker stop circleci-server
                   ssh $SSH_USER@$SSH_HOST docker pull leonsn/circleci-project-app
                   ssh $SSH_USER@$SSH_HOST docker container run -d --rm -p 5000:5000 --name circleci-server leonsn/circleci-project-app run.py
