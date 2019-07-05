@@ -1,6 +1,8 @@
 version: '3'
 services:
   app:
-    build: .
+    image: "mypython2:latest"
+    command: |
+      run.py
     ports:
       - "5000:5000"
