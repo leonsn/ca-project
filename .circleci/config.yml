@@ -53,12 +53,28 @@ jobs:
                   #ssh $SSH_USER@$SSH_HOST docker stop circleci-server
                   ssh $SSH_USER@$SSH_HOST docker pull leonsn/circleci-project-app
                   ssh $SSH_USER@$SSH_HOST docker container run -d --rm -p 5000:5000 --name circleci-server leonsn/circleci-project-app run.py
+  health_check:
+    machine: true
+    steps:
+      - run: mkdir test-results
+      - run:
+          name: Test that site is up
+          command: |
+            mkdir tests
+            curl $SSH_HOST:5000 > test-results/site.html
+      - store_artifacts:
+          path: test-results
+          destination: prefix
+
 
 workflows:
   version: 2
   test_and_package_flow:
     jobs:
       - deploy
+      - health-check:
+          requires:
+            - deploy
       #- test
       #- dockerize:
       #    requires:
