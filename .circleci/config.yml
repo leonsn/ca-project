@@ -38,9 +38,9 @@ jobs:
       # Login to docker
       - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
       # build the application image
-      - run: docker build -t leonsn/circleci-project-app:$CIRCLE_SHA1 .
+      - run: docker build -t leonsn/circleci-project-app:latest . #$CIRCLE_SHA1 .
       # deploy the image
-      - run: docker push leonsn/circleci-project-app:$CIRCLE_SHA1
+      - run: docker push leonsn/circleci-project-app:latest #$CIRCLE_SHA1
   deploy:
     machine: true
     steps:
@@ -54,15 +54,16 @@ workflows:
   test_and_package_flow:
     jobs:
       - test
-      - dockerize:
-          requires:
-            - test
-          filters:
-            branches:
-              only: master
-      - deploy:
-          requires:
-            - dockerize
-          filters:
-            branches:
-              only: master
+      #- test
+      #- dockerize:
+      #    requires:
+      #      - test
+      #    filters:
+      #      branches:
+      #        only: master
+      #- deploy:
+      #    requires:
+      #      - dockerize
+      #    filters:
+      #      branches:
+      #        only: master
